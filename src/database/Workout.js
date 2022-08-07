@@ -65,7 +65,7 @@ const deleteOneWorkout = (workoutId) => {
   try {
     const indexForDeletion = DB.workouts.findIndex(workout => workout.id === workoutId)
   
-    if (!indexForDeletion) {
+    if (indexForDeletion === -1) {
       throw { status: 400, message: `Can't find workout with the id '${workoutId}'` }
     }
   
