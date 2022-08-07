@@ -23,13 +23,21 @@ const getOneRecord = (recordId) => {
   }
 }
 
-const createNewRecord = (newRecord) => {
-  const isAlreadyAdded = DB.records.findIndex(record => record.workout === newRecord.workout) > -1
+const getRecordForWorkout = (workoutId) => {
+  try {
+    const record = DB.records.filter(record => record.workout === workoutId)
 
-  if (isAlreadyAdded) {
-    throw { status: 400, message: `Record with the workout '${newRecord.workout}' already exists` }
+    if (!record) {
+      throw { status: 400, message: `Can't find workout with the id '${workoutId}'` }
+    }
+
+    return record
+  } catch (error) {
+    throw { status: error?.status || 500, message: error?.message || error };    
   }
+}
 
+const createNewRecord = (newRecord) => {
   try {
     DB.records.push(newRecord)
     saveToDatabase(DB)
@@ -78,6 +86,7 @@ const deleteOneRecord = (recordId) => {
 module.exports = {
   getAllRecords,
   getOneRecord,
+  getRecordForWorkout,
   createNewRecord,
   updateOneRecord,
   deleteOneRecord
